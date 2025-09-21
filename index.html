@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI-Powered Assessment Practice Quiz</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <div class="quiz-container">
+
+        <div id="setup-area" class="screen">
+            <h1 class="main-title">AI Assessment Practice Tool</h1>
+            <p class="subtitle">Let AI generate a unique quiz for you.</p>
+
+            <div class="setup-controls">
+                <div>
+                    <label class="setup-label">1. Select Category</label>
+                    <div class="custom-select-wrapper" tabindex="0">
+                        <div class="custom-select-trigger">
+                            <span id="selected-category-text">Select a Category...</span>
+                            <svg class="arrow" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
+                                fill="currentColor">
+                                <path fill-rule="evenodd"
+                                    d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                                    clip-rule="evenodd" />
+                            </svg>
+                        </div>
+                        <div class="custom-options">
+                            <div class="custom-option" data-value="Mixed">Mixed Assessment</div>
+                            <div class="custom-option" data-value="Maths">Maths Assessment</div>
+                            <div class="custom-option" data-value="Quantitative Aptitude">Quantitative Aptitude</div>
+                            <div class="custom-option" data-value="Logical Reasoning">Logical Reasoning</div>
+                            <div class="custom-option" data-value="Verbal Ability">Verbal Ability</div>
+                            <div class="custom-option" data-value="Behavioral">Behavioral Assessment</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <h2 class="setup-label">2. Select Difficulty</h2>
+                    <div id="difficulty-buttons" class="difficulty-group">
+                        <button class="difficulty-btn" data-difficulty="easy">Easy</button>
+                        <button class="difficulty-btn selected" data-difficulty="medium">Medium</button>
+                        <button class="difficulty-btn" data-difficulty="hard">Hard</button>
+                    </div>
+                </div>
+
+                <div>
+                    <label for="num-questions-display" class="setup-label">3. Number of Questions</label>
+                    <div class="number-input-group">
+                        <button id="minus-btn" class="number-input-btn">-</button>
+                        <span id="num-questions-display" class="number-input-display">10</span>
+                        <button id="plus-btn" class="number-input-btn">+</button>
+                    </div>
+                </div>
+            </div>
+
+            <button id="start-btn" class="btn btn-start">
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                Start Quiz
+            </button>
+        </div>
+
+        <div id="quiz-area" class="screen hidden">
+            <div id="loading-area" class="hidden">
+                <div class="loader-container">
+                    <div class="loader"></div>
+                </div>
+                <p class="loading-text">Generating your personalized quiz with AI...</p>
+            </div>
+            <div id="quiz-content" class="hidden">
+                <div class="test-details">
+                    <span id="test-category-display"></span>
+                    <span id="test-difficulty-display"></span>
+                </div>
+
+                <div id="question-palette" class="palette-container"></div>
+                <div class="palette-legend">
+                    <span class="legend-item"><span class="legend-dot legend-answered"></span>Answered</span>
+                    <span class="legend-item"><span class="legend-dot legend-marked"></span>Marked</span>
+                    <span class="legend-item"><span class="legend-dot legend-not-visited"></span>Not Visited</span>
+                </div>
+                <div class="quiz-header">
+                    <h2 id="question-number">Question 1/10</h2>
+                    <div id="timer" class="timer-display">10:00</div>
+                </div>
+                <p id="question-text">Question text goes here...</p>
+                <div id="answer-buttons" class="answer-grid"></div>
+                <div class="quiz-footer">
+                    <button id="submit-quiz-btn" class="btn btn-submit">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon-sm" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd"
+                                d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                                clip-rule="evenodd" />
+                        </svg>
+                        Submit
+                    </button>
+                    <div class="footer-actions">
+                        <button id="explain-btn" class="btn btn-explain hidden">✨ Explain</button>
+                        <button id="attempt-later-btn" class="btn btn-mark">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon-sm" viewBox="0 0 20 20"
+                                fill="currentColor">
+                                <path fill-rule="evenodd"
+                                    d="M5 5a3 3 0 015.292-2.121C11.19 2.4 12.08 2 13 2c1.657 0 3 1.343 3 3 0 .92-.4 1.81-1.121 2.708C13.88 9.59 13 10.92 13 12v1a1 1 0 11-2 0v-1c0-1.08.88-2.41 1.879-3.292C13.6 7.81 14 6.92 14 6c0-.552-.448-1-1-1-.92 0-1.81.4-2.708 1.121A3.001 3.001 0 015 5z"
+                                    clip-rule="evenodd" />
+                                <path d="M4 14a1 1 0 112 0v1a1 1 0 11-2 0v-1z" />
+                            </svg>
+                            Mark
+                        </button>
+                        <button id="next-btn" class="btn btn-next">
+                            Next
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon-sm" viewBox="0 0 20 20"
+                                fill="currentColor">
+                                <path fill-rule="evenodd"
+                                    d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z"
+                                    clip-rule="evenodd" />
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="results-area" class="screen hidden">
+            <h2 class="results-title">Quiz Finished!</h2>
+            <div class="progress-circle-container">
+                <svg class="progress-svg" viewBox="0 0 100 100">
+                    <circle class="progress-circle-bg" stroke-width="8" r="42" cx="50" cy="50" />
+                    <circle id="progress-circle-bar" class="progress-circle-bar" stroke-width="8" r="42" cx="50"
+                        cy="50" />
+                </svg>
+                <div class="progress-text-container">
+                    <span id="score-text" class="score-text">0</span>
+                    <span class="score-total">out of <span id="total-questions">10</span></span>
+                </div>
+            </div>
+            <p id="result-message" class="result-message"></p>
+            <button id="feedback-btn" class="btn btn-feedback">✨ Get Personalized Feedback</button>
+            <div id="feedback-response" class="feedback-box hidden"></div>
+            <button id="restart-btn" class="btn btn-restart">
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h5M20 20v-5h-5" />
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M4 9a9 9 0 0114.13-6.36M20 15a9 9 0 01-14.13 6.36" />
+                </svg>
+                Generate Another Set
+            </button>
+        </div>
+    </div>
+
+    <div id="explanation-modal" class="modal-backdrop hidden">
+        <div class="modal-content">
+            <button id="close-modal-btn" class="modal-close-btn">&times;</button>
+            <h2 class="modal-title">Explanation</h2>
+            <div id="explanation-content" class="modal-body"></div>
+        </div>
+    </div>
+
+    <div id="submit-modal" class="modal-backdrop hidden">
+        <div class="modal-content modal-sm">
+            <h2 class="modal-title modal-title-warning">Confirm Submission</h2>
+            <p id="submit-modal-text" class="modal-text">You have unanswered questions. Are you sure?</p>
+            <div class="modal-button-group">
+                <button id="cancel-submit-btn" class="btn btn-modal-cancel">Cancel</button>
+                <button id="confirm-submit-btn" class="btn btn-modal-confirm">Confirm</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>

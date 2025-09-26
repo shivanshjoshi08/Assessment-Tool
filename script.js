@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
     // --- API Configuration ---
-    const API_KEY = "AIzaSyCTgTt6z-z1AMClq70fJbaSZWBn7NVW4YI"; // IMPORTANT: Make sure your API key is here
+    const API_KEY = "AIzaSyCxpQow52pu5MvWRtheiq3vraP3hEzHm4U"; // IMPORTANT: Make sure your API key is here
     const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${API_KEY}`;
 
     // --- Global Variables ---
